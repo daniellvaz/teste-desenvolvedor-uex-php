@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers\Api\Contact;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Group;
+use App\Http\Requests\UpdateContactRequest;
 
 class UpdateContactController extends Controller
 {
+    /**
+     * Atualiza os dados de contato
+     *
+     * @param UpdateContactRequest $request
+     * @param Contact $contact
+     * @return JsonResponse
+     */
+     #[Group('Contact')]
     public function __invoke(UpdateContactRequest $request, Contact $contact): JsonResponse
     {
         try {

@@ -1,16 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Api\Authentication;
+namespace App\Http\Controllers\Api\Account;
 
 use App\Models\User;
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Controllers\Controller;
-use App\Models\PasswordReset;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Models\PasswordReset;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Mail\ForgotPasswordMail;
+use Dedoc\Scramble\Attributes\Group;
 
 class ForgotPasswordController extends Controller
 {
+
+    /**
+     * Recuperação de senha do usuário
+     *
+     * @param ForgotPasswordRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+     #[Group('Account')]
     public function __invoke(ForgotPasswordRequest $request)
     {
         try {
@@ -22,12 +32,10 @@ class ForgotPasswordController extends Controller
                 ], 200);
             }
 
-            // Limpar tokens anteriores expirados
             PasswordReset::where('user_id', $user->id)
                 ->where('expires_at', '<', now())
                 ->delete();
 
-            // Criar novo token
             $token = Str::random(64);
 
             PasswordReset::create([
@@ -36,12 +44,7 @@ class ForgotPasswordController extends Controller
                 'expires_at' => now()->addHour(),
             ]);
 
-            // Enviar email com link de reset
-            $resetUrl = config('app.frontend_url') . "/reset-password?token={$token}&email={$user->email}";
-
-            Mail::send('emails.password-reset', ['resetUrl' => $resetUrl], function ($message) use ($user) {
-                $message->to($user->email)->subject('Reset de Senha');
-            });
+            Mail::to($user->email)->queue(new ForgotPasswordMail($user, $token));
 
             return response()->json([
                 'message' => 'Se este email existir em nossa plataforma, você receberá um link de reset de senha.'

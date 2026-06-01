@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers\Api\Contact;
 
-use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Group;
 
 class ListContactsController extends Controller
 {
+    /**
+     * Listar os contatos cadastrado
+     *
+     * @param Request $request
+     * @return void
+     */
+    #[Group('Contact')]
     public function __invoke(Request $request)
     {
         $user = $request->user();
@@ -22,6 +30,8 @@ class ListContactsController extends Controller
             $query->where('cpf', 'like', '%' . $request->input('cpf') . '%');
         }
 
-        return $query->get();
+        $result = $query->get();
+
+        return $result;
     }
 }

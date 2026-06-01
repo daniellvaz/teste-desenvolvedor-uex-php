@@ -3,31 +3,27 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DeleteContactRequest;
 use App\Models\Contact;
-use Illuminate\Http\Request;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class DeleteContactController extends Controller
 {
-    public function __invoke(Request $request, Contact $contact): JsonResponse
+    /**
+     * Deletar um contato existente
+     *
+     * @param Contact $contact
+     * @param DeleteContactRequest $request
+     *
+     * @return JsonResponse
+     */
+    #[Group('Contact')]
+    public function __invoke(DeleteContactRequest $request, Contact $contact): JsonResponse
     {
         try {
-            // Get password from request body or query string
-            $password = $request->input('password') ?? $request->query('password');
-
-            if (!$password) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validação falhou',
-                    'errors' => [
-                        'password' => ['A senha é obrigatória'],
-                    ],
-                ], 422);
-            }
-
-            // Validate password
-            if (!Hash::check($password, $request->user()->password)) {
+            if (!Hash::check($request->input('password'), $request->user()->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validação falhou',

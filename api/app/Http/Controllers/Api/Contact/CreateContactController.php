@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateContactRequest;
 use App\Models\Contact;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 
 class CreateContactController extends Controller
@@ -15,6 +16,7 @@ class CreateContactController extends Controller
      * @param CreateContactRequest $request
      * @return JsonResponse
      */
+    #[Group('Contact')]
     public function __invoke(CreateContactRequest $request): JsonResponse
     {
         try {

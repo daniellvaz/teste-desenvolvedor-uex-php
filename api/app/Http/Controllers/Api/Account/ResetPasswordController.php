@@ -1,18 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Api\Authentication;
+namespace App\Http\Controllers\Api\Account;
 
 use App\Models\User;
 use App\Models\PasswordReset;
-use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Group;
+use App\Http\Requests\ResetPasswordRequest;
 
 class ResetPasswordController extends Controller
 {
+
+    /**
+     * Reset da senha do usuário
+     *
+     * @param ResetPasswordRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+     #[Group('Account')]
     public function __invoke(ResetPasswordRequest $request)
     {
         try {
-            // Encontrar o token de reset
             $passwordReset = PasswordReset::where('token', $request->token)
                 ->where('expires_at', '>=', now())
                 ->first();
@@ -23,7 +31,6 @@ class ResetPasswordController extends Controller
                 ], 422);
             }
 
-            // Verificar se o email corresponde ao usuário
             $user = User::find($passwordReset->user_id);
 
             if ($user->email !== $request->email) {
@@ -31,16 +38,12 @@ class ResetPasswordController extends Controller
                     'message' => 'Email não corresponde ao token fornecido.'
                 ], 422);
             }
-
-            // Atualizar a senha
             $user->update([
                 'password' => $request->password,
             ]);
 
-            // Remover o token de reset
             $passwordReset->delete();
 
-            // Remover todos os tokens de autenticação do usuário
             $user->tokens()->delete();
 
             return response()->json([

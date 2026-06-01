@@ -7,9 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Controller;
+use Dedoc\Scramble\Attributes\Group;
 
 class LoginController extends Controller
 {
+    /**
+     * Login do usuário
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+     #[Group('Authentication')]
     public function __invoke(Request $request)
     {
         $request->validate([

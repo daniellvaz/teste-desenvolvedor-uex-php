@@ -6,7 +6,21 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api"
+            "url": "http://localhost:5173/api"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Account"
+        },
+        {
+            "name": "Authentication"
+        },
+        {
+            "name": "Address"
+        },
+        {
+            "name": "Contact"
         }
     ],
     "security": [
@@ -15,12 +29,458 @@
         }
     ],
     "paths": {
+        "/register": {
+            "post": {
+                "operationId": "account.register",
+                "summary": "Cadastro do usu\u00e1rio na plataforma",
+                "tags": [
+                    "Account"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "minLength": 6
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "minLength": 6
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "user",
+                                        "token"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "operationId": "account.forgotPassword",
+                "summary": "Recupera\u00e7\u00e3o de senha do usu\u00e1rio",
+                "tags": [
+                    "Account"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Erro ao processar solicita\u00e7\u00e3o de reset de senha."
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Se este email existir em nossa plataforma, voc\u00ea receber\u00e1 um link de reset de senha."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "operationId": "account.resetPassword",
+                "summary": "Reset da senha do usu\u00e1rio",
+                "tags": [
+                    "Account"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Erro ao resetar a senha."
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Senha resetada com sucesso. Por favor, fa\u00e7a login com sua nova senha."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/account": {
+            "delete": {
+                "operationId": "account.deleteAccount",
+                "summary": "Deleta a conta do usuario",
+                "tags": [
+                    "Account"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/address/search": {
+            "get": {
+                "operationId": "address.searchAddress",
+                "summary": "Rota para busca de endere\u00e7o por CEP\nIntegra\u00e7\u00e3o feita com o ViaCep",
+                "tags": [
+                    "Address"
+                ],
+                "parameters": [
+                    {
+                        "name": "cep",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "cep": {
+                                                            "type": "string"
+                                                        },
+                                                        "street": {
+                                                            "type": "string"
+                                                        },
+                                                        "neighborhood": {
+                                                            "type": "string"
+                                                        },
+                                                        "city": {
+                                                            "type": "string"
+                                                        },
+                                                        "state": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "cep",
+                                                        "street",
+                                                        "neighborhood",
+                                                        "city",
+                                                        "state"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "operationId": "authentication.login",
+                "summary": "Login do usu\u00e1rio",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "anyOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                {
+                                                    "type": "null"
+                                                }
+                                            ]
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "user",
+                                        "token"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Credenciais inv\u00e1lidas"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "delete": {
+                "operationId": "authentication.logout",
+                "summary": "Logout do usu\u00e1rio",
+                "tags": [
+                    "Authentication"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Logout realizado"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/contacts": {
+            "get": {
+                "operationId": "contact.listContacts",
+                "summary": "Listar os contatos cadastrado",
+                "tags": [
+                    "Contact"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Contact"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
             "post": {
                 "operationId": "contact.createContact",
                 "summary": "Criar um novo contato para o usu\u00e1rio autenticado",
                 "tags": [
-                    "CreateContact"
+                    "Contact"
                 ],
                 "requestBody": {
                     "required": true,
@@ -94,197 +554,14 @@
                         "$ref": "#/components/responses/ValidationException"
                     }
                 }
-            },
-            "get": {
-                "operationId": "contact.listContacts",
-                "tags": [
-                    "ListContacts"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Contact"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
             }
         },
         "/contacts/{contact}": {
-            "delete": {
-                "operationId": "contact.deleteContact",
-                "tags": [
-                    "DeleteContact"
-                ],
-                "parameters": [
-                    {
-                        "name": "contact",
-                        "in": "path",
-                        "required": true,
-                        "description": "The contact ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "500": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Erro ao deletar contato"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "error"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Contato deletado com sucesso"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "anyOf": [
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "success": {
-                                                    "type": "boolean"
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "const": "Valida\u00e7\u00e3o falhou"
-                                                },
-                                                "errors": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "password": {
-                                                            "type": "array",
-                                                            "prefixItems": [
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "A senha fornecida est\u00e1 incorreta"
-                                                                }
-                                                            ],
-                                                            "minItems": 1,
-                                                            "maxItems": 1,
-                                                            "additionalItems": false
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "password"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "success",
-                                                "message",
-                                                "errors"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "success": {
-                                                    "type": "boolean"
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "const": "Valida\u00e7\u00e3o falhou"
-                                                },
-                                                "errors": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "password": {
-                                                            "type": "array",
-                                                            "prefixItems": [
-                                                                {
-                                                                    "type": "string",
-                                                                    "const": "A senha \u00e9 obrigat\u00f3ria"
-                                                                }
-                                                            ],
-                                                            "minItems": 1,
-                                                            "maxItems": 1,
-                                                            "additionalItems": false
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "password"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "success",
-                                                "message",
-                                                "errors"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            },
             "get": {
                 "operationId": "contact.listOneContact",
+                "summary": "Lista um unico contato",
                 "tags": [
-                    "ListOneContact"
+                    "Contact"
                 ],
                 "parameters": [
                     {
@@ -318,8 +595,9 @@
             },
             "put": {
                 "operationId": "contact.updateContact",
+                "summary": "Atualiza os dados de contato",
                 "tags": [
-                    "UpdateContact"
+                    "Contact"
                 ],
                 "parameters": [
                     {
@@ -406,388 +684,80 @@
                         "$ref": "#/components/responses/ValidationException"
                     }
                 }
-            }
-        },
-        "/forgot-password": {
-            "post": {
-                "operationId": "authentication.forgotPassword",
+            },
+            "patch": {
+                "operationId": "contact.deleteContact",
+                "summary": "Deletar um contato existente",
                 "tags": [
-                    "ForgotPassword"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ForgotPasswordRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "500": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Erro ao processar solicita\u00e7\u00e3o de reset de senha."
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message",
-                                        "error"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "TODO: Implementar envio de email com a URL de reset\nMail::send('emails.password-reset', ['resetUrl' => $resetUrl], function ($message) use ($user) {\n$message->to($user->email)->subject('Reset de Senha');\n});",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Se este email existir em nossa plataforma, voc\u00ea receber\u00e1 um link de reset de senha."
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/login": {
-            "post": {
-                "operationId": "authentication.login",
-                "tags": [
-                    "Login"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "email",
-                                    "password"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "user": {
-                                            "anyOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/User"
-                                                },
-                                                {
-                                                    "type": "null"
-                                                }
-                                            ]
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "user",
-                                        "token"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Credenciais inv\u00e1lidas"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/logout": {
-            "delete": {
-                "operationId": "authentication.logout",
-                "tags": [
-                    "Logout"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Logout realizado"
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/register": {
-            "post": {
-                "operationId": "account.register",
-                "tags": [
-                    "Register"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "minLength": 6
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string",
-                                        "minLength": 6
-                                    }
-                                },
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "password",
-                                    "password_confirmation"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "user",
-                                        "token"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/reset-password": {
-            "post": {
-                "operationId": "authentication.resetPassword",
-                "tags": [
-                    "ResetPassword"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "500": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Erro ao resetar a senha."
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message",
-                                        "error"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Senha resetada com sucesso. Por favor, fa\u00e7a login com sua nova senha."
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/address/search": {
-            "get": {
-                "operationId": "address.searchAddress",
-                "tags": [
-                    "SearchAddress"
+                    "Contact"
                 ],
                 "parameters": [
                     {
-                        "name": "cep",
-                        "in": "query",
+                        "name": "contact",
+                        "in": "path",
                         "required": true,
+                        "description": "The contact ID",
                         "schema": {
-                            "type": "string",
-                            "minLength": 1
+                            "type": "integer"
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteContactRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Erro ao deletar contato"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "200": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "anyOf": [
-                                        {
-                                            "type": "string"
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
                                         },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "success": {
-                                                    "type": "boolean"
-                                                },
-                                                "data": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "cep": {
-                                                            "type": "string"
-                                                        },
-                                                        "street": {
-                                                            "type": "string"
-                                                        },
-                                                        "neighborhood": {
-                                                            "type": "string"
-                                                        },
-                                                        "city": {
-                                                            "type": "string"
-                                                        },
-                                                        "state": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "cep",
-                                                        "street",
-                                                        "neighborhood",
-                                                        "city",
-                                                        "state"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "success",
-                                                "data"
-                                            ]
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Contato deletado com sucesso"
                                         }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
                                     ]
                                 }
                             }
@@ -795,6 +765,12 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -1010,6 +986,19 @@
                     "cpf"
                 ],
                 "title": "CreateContactRequest"
+            },
+            "DeleteContactRequest": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "minLength": 6
+                    }
+                },
+                "required": [
+                    "password"
+                ],
+                "title": "DeleteContactRequest"
             },
             "ForgotPasswordRequest": {
                 "type": "object",
