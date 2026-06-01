@@ -1,4 +1,8 @@
+import { z } from 'zod';
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, Link } from '@tanstack/react-router'
+
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -8,22 +12,49 @@ import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import LockResetIcon from '@mui/icons-material/LockReset'
+import { useAccountForgotPassword, type AccountForgotPasswordMutationBody } from '@/http/generated/account/account';
+
+
 
 export const Route = createFileRoute('/(public)/forgot-password')({
   component: RouteComponent,
 })
 
+const formSchema = z.object({
+  email: z.email('Email inválido').min(1, 'O email é obrigatório'),
+})
+
 function RouteComponent() {
+  const { mutateAsync } = useAccountForgotPassword({
+    mutation: {
+      onSuccess({ message }) {
+        alert(message)
+      },
+      onError(error) {
+        alert(error.response?.data.message)
+      }
+    }
+  })
+  const { register, handleSubmit, formState: { errors } } = useForm<AccountForgotPasswordMutationBody>({
+    resolver: zodResolver(formSchema)
+  });
+
+  const onSubmit = async (data: AccountForgotPasswordMutationBody) => {
+    await mutateAsync({
+      data
+    })
+  }
+
   return (
     <Container component="main" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
       <CssBaseline />
       <Paper
         elevation={3}
         sx={{
+          padding: 4,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
-          padding: 4
+          flexDirection: 'column',
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -36,16 +67,26 @@ function RouteComponent() {
           Informe o e-mail da sua conta para <br />
           receber instruções de recuperação.
         </Typography>
-        <Box component="form" noValidate sx={{ width: '100%', maxWidth: 400 }}>
+        <Box
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+          component="form"
+          sx={{
+            width: '100%',
+            maxWidth: 400
+          }}
+        >
           <TextField
-            margin="normal"
             required
             fullWidth
             id="email"
-            label="E-mail"
-            name="email"
-            autoComplete="email"
             autoFocus
+            label="E-mail"
+            margin="normal"
+            autoComplete="email"
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email?.message}
           />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, mb: 1 }}>
             Enviar instruções

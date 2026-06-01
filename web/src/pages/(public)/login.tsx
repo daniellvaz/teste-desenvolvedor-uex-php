@@ -2,8 +2,10 @@ import { useForm } from 'react-hook-form'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Box, Button, Checkbox, Container, FormControlLabel, Stack, TextField, Typography } from '@mui/material'
 
-import type { PostLoginBody } from '../../http/generated/api.schemas'
 import { useAuthentication } from '@/contexts/auth'
+import type { AuthenticationLoginBody } from '@/http/generated/api.schemas'
+
+
 
 export const Route = createFileRoute('/(public)/login')({
   component: RouteComponent,
@@ -11,9 +13,9 @@ export const Route = createFileRoute('/(public)/login')({
 
 function RouteComponent() {
   const { signIn } = useAuthentication()
-  const { register, handleSubmit } = useForm<PostLoginBody>();
+  const { register, handleSubmit } = useForm<AuthenticationLoginBody>();
 
-  const onSubmit = async (data: PostLoginBody) => await signIn(data)
+  const onSubmit = async (data: AuthenticationLoginBody) => await signIn(data)
 
   return (
     <Container

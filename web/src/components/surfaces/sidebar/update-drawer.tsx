@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button,
@@ -11,15 +12,13 @@ import {
   Typography
 } from "@mui/material";
 
-import { addressSearchAddress, getAddressSearchAddressQueryKey } from "@/http/generated/search-address/search-address";
-
 import { queryClient } from "@/libs/react-query";
-import { getContactListContactsQueryKey } from "@/http/generated/list-contacts/list-contacts";
 import { useCoordinates } from "@/contexts/coordinates";
 
-import { useContactUpdateContact, type ContactUpdateContactMutationBody } from "@/http/generated/update-contact/update-contact";
 import type { Contact } from "@/http/generated/api.schemas";
-import { useEffect } from "react";
+import { getContactListContactsQueryKey, useContactUpdateContact, type ContactUpdateContactMutationBody } from "@/http/generated/contact/contact";
+import { addressSearchAddress, getAddressSearchAddressQueryKey } from "@/http/generated/address/address";
+
 
 export interface UpdateContactDialogProps {
   open: boolean;

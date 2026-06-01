@@ -11,10 +11,11 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import { useContactDeleteContact } from "@/http/generated/delete-contact/delete-contact";
 import { queryClient } from "@/libs/react-query";
-import { getContactListContactsQueryKey } from "@/http/generated/list-contacts/list-contacts";
-import type { Contact, ContactDeleteContactBody } from "@/http/generated/api.schemas";
+
+import type { Contact, } from "@/http/generated/api.schemas";
+import { getContactListContactsQueryKey, useContactDeleteContact, type ContactDeleteContactMutationBody } from "@/http/generated/contact/contact";
+
 
 export interface DeleteAlertProps {
   open: boolean;
@@ -52,7 +53,7 @@ export function DeleteAlert({ open = false, onClose, contact }: DeleteAlertProps
     }
 
     try {
-      const data: ContactDeleteContactBody = { password };
+      const data: ContactDeleteContactMutationBody = { password };
       await mutateAsync({
         contact: contact.id,
         data,

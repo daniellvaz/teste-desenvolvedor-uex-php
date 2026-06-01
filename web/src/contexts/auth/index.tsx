@@ -3,8 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react"
 
 import type { User } from "@/http/generated/api.schemas";
-import { useAuthenticationLogin } from "@/http/generated/login/login";
-import { useAuthenticationLogout } from "@/http/generated/logout/logout";
+import { useAuthenticationLogin, useAuthenticationLogout } from "@/http/generated/authentication/authentication";
 
 export interface Credentials {
   email: string;

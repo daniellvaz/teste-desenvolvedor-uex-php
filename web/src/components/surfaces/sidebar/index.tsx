@@ -1,24 +1,38 @@
-import { Delete, Edit, Logout } from "@mui/icons-material";
-import { Avatar, Box, Button, CircularProgress, Divider, IconButton, List, ListItemButton, ListItemText, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Delete, Edit, Logout, MoreVert } from "@mui/icons-material";
+import { Avatar, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
 
 import { useAuthentication } from "@/contexts/auth";
 
-import { useContactListContacts } from "@/http/generated/list-contacts/list-contacts";
 import { useCoordinates } from "@/contexts/coordinates";
 import { UpdateContactDrawer } from "./update-drawer";
 import { DeleteAlert } from "./delete-alert";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import type { Contact } from "@/http/generated/api.schemas";
-
+import { useAccountDeleteAccount } from "@/http/generated/account/account";
+import { useContactListContacts } from "@/http/generated/contact/contact";
+import { useNavigate } from "@tanstack/react-router";
 
 export function Sidebar() {
+  const navigate = useNavigate()
   const { setCoordinates } = useCoordinates()
   const { user, signOut } = useAuthentication()
+  const { mutateAsync: deleteAccount } = useAccountDeleteAccount({
+    mutation: {
+      onSuccess() {
+        navigate({ to: "/login" })
+      },
+      onError(error) {
+        alert(error.response?.data.message)
+      }
+    }
+  })
   const { data: contacts, isLoading } = useContactListContacts();
 
   const [contact, setContact] = useState<Contact>({} as Contact);
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
 
   const handleOpenUpdateDrawer = (data: Contact) => {
     setIsUpdateDrawerOpen(true);
@@ -28,6 +42,28 @@ export function Sidebar() {
   const handleOpenDeleteAlert = (data: Contact) => {
     setIsDeleteAlertOpen(true);
     setContact(data);
+  }
+
+  const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  }
+
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+  }
+
+  const handleOpenDeleteAccountDialog = () => {
+    setIsDeleteAccountDialogOpen(true);
+    handleCloseMenu();
+  }
+
+  const handleCloseDeleteAccountDialog = () => {
+    setIsDeleteAccountDialogOpen(false);
+  }
+
+  const handleConfirmDeleteAccount = async () => {
+    setIsDeleteAccountDialogOpen(false);
+    await deleteAccount()
   }
 
   return (
@@ -59,8 +95,9 @@ export function Sidebar() {
             <CircularProgress />
           </Box>
         ) : !contacts || contacts.length === 0 ? (
-          <Typography variant="body2" color="textSecondary" sx={{ p: 2 }}>
-            Nenhum contato encontrado
+          <Typography variant="body2" color="textSecondary" align="center" sx={{ p: 2 }}>
+            Nenhum contato por aqui.
+            Clique com o botão direito no mapa para começar
           </Typography>
         ) : (
           <List disablePadding>
@@ -114,6 +151,17 @@ export function Sidebar() {
                   {user?.email}
                 </Typography>
               </Box>
+              <IconButton size="small" onClick={handleOpenMenu}>
+                <MoreVert fontSize="small" />
+              </IconButton>
+              <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleCloseMenu}>
+                <MenuItem onClick={handleOpenDeleteAccountDialog}>
+                  <ListItemIcon>
+                    <Delete fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Deletar conta</ListItemText>
+                </MenuItem>
+              </Menu>
             </Stack>
             <Button
               fullWidth
@@ -129,6 +177,20 @@ export function Sidebar() {
 
       <UpdateContactDrawer open={isUpdateDrawerOpen} onClose={() => setIsUpdateDrawerOpen(false)} contact={contact} />
       <DeleteAlert open={isDeleteAlertOpen} onClose={() => setIsDeleteAlertOpen(false)} contact={contact} />
+      <Dialog open={isDeleteAccountDialogOpen} onClose={handleCloseDeleteAccountDialog}>
+        <DialogTitle>Deletar conta</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja excluir sua conta? Esta ação não poderá ser desfeita.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteAccountDialog}>Cancelar</Button>
+          <Button color="error" onClick={handleConfirmDeleteAccount}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

@@ -15,18 +15,25 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AuthenticationExceptionResponse,
   AuthenticationLogin201,
   AuthenticationLogin401,
   AuthenticationLoginBody,
+  AuthenticationLogout200,
   ValidationExceptionResponse
 } from '../api.schemas';
 
 import authenticationLoginMutator from '../../../libs/axios';
 import type { ErrorType as AuthenticationLoginErrorType } from '../../../libs/axios';
+import authenticationLogoutMutator from '../../../libs/axios';
+import type { ErrorType as AuthenticationLogoutErrorType } from '../../../libs/axios';
 
 
 
 
+/**
+ * @summary Login do usuário
+ */
 export const authenticationLogin = (
     authenticationLoginBody: AuthenticationLoginBody,
  signal?: AbortSignal
@@ -74,7 +81,10 @@ const {mutation: mutationOptions} = options ?
     export type AuthenticationLoginMutationBody = AuthenticationLoginBody
     export type AuthenticationLoginMutationError = AuthenticationLoginErrorType<AuthenticationLogin401 | ValidationExceptionResponse>
 
-    export const useAuthenticationLogin = <TError = AuthenticationLoginErrorType<AuthenticationLogin401 | ValidationExceptionResponse>,
+    /**
+ * @summary Login do usuário
+ */
+export const useAuthenticationLogin = <TError = AuthenticationLoginErrorType<AuthenticationLogin401 | ValidationExceptionResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authenticationLogin>>, TError,{data: AuthenticationLoginBody}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof authenticationLogin>>,
@@ -83,4 +93,65 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getAuthenticationLoginMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Logout do usuário
+ */
+export const authenticationLogout = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return authenticationLogoutMutator<AuthenticationLogout200>(
+      {url: `/logout`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getAuthenticationLogoutMutationOptions = <TError = AuthenticationLogoutErrorType<AuthenticationExceptionResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authenticationLogout>>, TError,void, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof authenticationLogout>>, TError,void, TContext> => {
+
+const mutationKey = ['authenticationLogout'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof authenticationLogout>>, void> = () => {
+
+
+          return  authenticationLogout()
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AuthenticationLogoutMutationResult = NonNullable<Awaited<ReturnType<typeof authenticationLogout>>>
+
+    export type AuthenticationLogoutMutationError = AuthenticationLogoutErrorType<AuthenticationExceptionResponse>
+
+    /**
+ * @summary Logout do usuário
+ */
+export const useAuthenticationLogout = <TError = AuthenticationLogoutErrorType<AuthenticationExceptionResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authenticationLogout>>, TError,void, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof authenticationLogout>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getAuthenticationLogoutMutationOptions(options), queryClient);
     }

@@ -31,6 +31,10 @@ import type { ErrorType as AddressSearchAddressErrorType } from '../../../libs/a
 
 
 
+/**
+ * @summary Rota para busca de endereço por CEP
+Integração feita com o ViaCep
+ */
 export const addressSearchAddress = (
     params: AddressSearchAddressParams,
  signal?: AbortSignal
@@ -100,6 +104,10 @@ export function useAddressSearchAddress<TData = Awaited<ReturnType<typeof addres
  params: AddressSearchAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof addressSearchAddress>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Rota para busca de endereço por CEP
+Integração feita com o ViaCep
+ */
 
 export function useAddressSearchAddress<TData = Awaited<ReturnType<typeof addressSearchAddress>>, TError = AddressSearchAddressErrorType<ValidationExceptionResponse>>(
  params: AddressSearchAddressParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof addressSearchAddress>>, TError, TData>>, }

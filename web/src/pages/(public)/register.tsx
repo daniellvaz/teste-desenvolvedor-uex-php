@@ -1,41 +1,56 @@
-import { type ChangeEvent, type FormEvent, useState } from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import { Stack } from '@mui/material'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import TextField from '@mui/material/TextField'
 import { ArrowBack } from '@mui/icons-material'
+import Typography from '@mui/material/Typography'
+
+import z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+
+import type { AccountRegisterBody } from '@/http/generated/api.schemas'
+import { useAccountRegister } from '@/http/generated/account/account'
+
 
 export const Route = createFileRoute('/(public)/register')({
   component: RouteComponent,
 })
 
+const formSchema = z.object({
+  name: z.string().min(1, 'O nome é obrigatório'),
+  email: z.email('Email inválido').min(1, 'O email é obrigatório'),
+  password: z.string().min(1, 'A senha é obrigatória'),
+  password_confirmation: z.string().min(1, 'A confirmação da senha é obrigatória')
+}).refine((data) => data.password === data.password_confirmation, {
+  message: 'As senhas não coincidem',
+  path: ['password_confirmation'],
+})
+
 function RouteComponent() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const navigate = useNavigate()
+  const { mutateAsync } = useAccountRegister({
+    mutation: {
+      onSuccess: () => {
+        alert('Conta criada com sucesso! Agora você pode fazer login.');
+        navigate({ to: '/login' })
+      },
+      onError: (error) => {
+        alert(error.response?.data.message || 'Ocorreu um erro ao registrar a conta. Por favor, tente novamente.')
+        console.error('Erro ao registrar:', error)
+      }
+    }
+  })
+  const { register, handleSubmit, formState: { errors } } = useForm<AccountRegisterBody>({
+    resolver: zodResolver(formSchema),
   })
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target
-    setForm((current) => ({
-      ...current,
-      [name]: value,
-    }))
-  }
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (form.password !== form.confirmPassword) {
-      alert('As senhas não coincidem.')
-      return
-    }
-
-    alert(`Registrado: ${form.name} (${form.email})`)
+  async function onSubmit(data: AccountRegisterBody) {
+    await mutateAsync({
+      data
+    })
   }
 
   return (
@@ -56,8 +71,8 @@ function RouteComponent() {
       >
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <ArrowBack />
-            <Link to="/login" style={{ textDecoration: 'none' }}>
+            <Link to="/login" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <ArrowBack />
               <Typography variant="body2" color="textPrimary">
                 Voltar para login
               </Typography>
@@ -70,7 +85,7 @@ function RouteComponent() {
 
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -79,45 +94,45 @@ function RouteComponent() {
         >
           <TextField
             id="name"
-            name="name"
             label="Nome"
-            value={form.name}
-            onChange={handleChange}
             required
             fullWidth
+            error={!!errors.name}
+            helperText={errors.name ? 'O nome é obrigatório' : ''}
+            {...register('name')}
           />
 
           <TextField
             id="email"
-            name="email"
             label="Email"
             type="email"
-            value={form.email}
-            onChange={handleChange}
+            {...register('email')}
             required
             fullWidth
+            error={!!errors.email}
+            helperText={errors.email ? 'O email é obrigatório' : ''}
           />
 
           <TextField
+            required
+            fullWidth
             id="password"
-            name="password"
             label="Senha"
             type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            fullWidth
+            {...register('password')}
+            error={!!errors.password}
+            helperText={errors.password ? 'A senha é obrigatória' : ''}
           />
 
           <TextField
-            id="confirmPassword"
-            name="confirmPassword"
-            label="Confirmação de senha"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
             required
             fullWidth
+            type="password"
+            id="confirmPassword"
+            label="Confirmação de senha"
+            {...register('password_confirmation')}
+            error={!!errors.password_confirmation}
+            helperText={errors.password_confirmation ? 'A confirmação da senha é obrigatória' : ''}
           />
 
           <Button type="submit" variant="contained" color="primary" fullWidth>

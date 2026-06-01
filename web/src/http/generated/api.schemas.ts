@@ -97,6 +97,11 @@ export interface CreateContactRequest {
   longitude?: number | null;
 }
 
+export interface DeleteContactRequest {
+  /** @minLength 6 */
+  password: string;
+}
+
 export interface ForgotPasswordRequest {
   email: string;
 }
@@ -206,70 +211,56 @@ export type ModelNotFoundExceptionResponse = {
   message: string;
 };
 
-export type ContactCreateContact201 = {
-  success: boolean;
-  message: 'Contato criado com sucesso';
-  data: Contact;
+export type AccountRegisterBody = {
+  name: string;
+  email: string;
+  /** @minLength 6 */
+  password: string;
+  /** @minLength 6 */
+  password_confirmation: string;
 };
 
-export type ContactCreateContact500 = {
-  success: boolean;
-  message: 'Erro ao criar contato';
-  error: string;
+export type AccountRegister201 = {
+  user: User;
+  token: string;
 };
 
-export type ContactDeleteContact200 = {
-  success: boolean;
-  message: 'Contato deletado com sucesso';
-};
-
-export type ContactDeleteContact422 = {
-  success: boolean;
-  message: 'Validação falhou';
-  errors: {
-  /**
-     * @minItems 1
-     * @maxItems 1
-     */
-  password: ['A senha fornecida está incorreta'];
-};
-} | {
-  success: boolean;
-  message: 'Validação falhou';
-  errors: {
-  /**
-     * @minItems 1
-     * @maxItems 1
-     */
-  password: ['A senha é obrigatória'];
-};
-};
-
-export type ContactDeleteContact500 = {
-  success: boolean;
-  message: 'Erro ao deletar contato';
-  error: string;
-};
-
-export type ContactUpdateContact200 = {
-  success: boolean;
-  message: 'Contato atualizado com sucesso';
-  data: Contact;
-};
-
-export type ContactUpdateContact500 = {
-  success: boolean;
-  message: 'Erro ao atualizar contato';
-  error: string;
-};
-
-export type AuthenticationForgotPassword200 = {
+export type AccountForgotPassword200 = {
   message: 'Se este email existir em nossa plataforma, você receberá um link de reset de senha.';
 };
 
-export type AuthenticationForgotPassword500 = {
+export type AccountForgotPassword500 = {
   message: 'Erro ao processar solicitação de reset de senha.';
   error: string;
+};
+
+export type AccountResetPassword200 = {
+  message: 'Senha resetada com sucesso. Por favor, faça login com sua nova senha.';
+};
+
+export type AccountResetPassword500 = {
+  message: 'Erro ao resetar a senha.';
+  error: string;
+};
+
+export type AccountDeleteAccount200 = { [key: string]: unknown };
+
+export type AddressSearchAddressParams = {
+/**
+ * @minLength 1
+ */
+cep: string;
+};
+
+export type AddressSearchAddress200 = string | {
+  success: boolean;
+  data: {
+  cep: string;
+  street: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+};
 };
 
 export type AuthenticationLoginBody = {
@@ -290,44 +281,38 @@ export type AuthenticationLogout200 = {
   message: 'Logout realizado';
 };
 
-export type AccountRegisterBody = {
-  name: string;
-  email: string;
-  /** @minLength 6 */
-  password: string;
-  /** @minLength 6 */
-  password_confirmation: string;
+export type ContactCreateContact201 = {
+  success: boolean;
+  message: 'Contato criado com sucesso';
+  data: Contact;
 };
 
-export type AccountRegister201 = {
-  user: User;
-  token: string;
-};
-
-export type AuthenticationResetPassword200 = {
-  message: 'Senha resetada com sucesso. Por favor, faça login com sua nova senha.';
-};
-
-export type AuthenticationResetPassword500 = {
-  message: 'Erro ao resetar a senha.';
+export type ContactCreateContact500 = {
+  success: boolean;
+  message: 'Erro ao criar contato';
   error: string;
 };
 
-export type AddressSearchAddressParams = {
-/**
- * @minLength 1
- */
-cep: string;
+export type ContactUpdateContact200 = {
+  success: boolean;
+  message: 'Contato atualizado com sucesso';
+  data: Contact;
 };
 
-export type AddressSearchAddress200 = string | {
+export type ContactUpdateContact500 = {
   success: boolean;
-  data: {
-  cep: string;
-  street: string;
-  neighborhood: string;
-  city: string;
-  state: string;
+  message: 'Erro ao atualizar contato';
+  error: string;
 };
+
+export type ContactDeleteContact200 = {
+  success: boolean;
+  message: 'Contato deletado com sucesso';
+};
+
+export type ContactDeleteContact500 = {
+  success: boolean;
+  message: 'Erro ao deletar contato';
+  error: string;
 };
 
