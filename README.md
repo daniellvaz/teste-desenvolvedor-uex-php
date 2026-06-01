@@ -1,110 +1,362 @@
-# Projeto UEX - Agenda de Contatos
+# UEX - Agenda de Contatos
 
-Projeto full-stack com backend em Laravel e frontend em React + TypeScript + Vite.
+Sistema de gerenciamento de contatos desenvolvido como teste técnico para a vaga de **Desenvolvedor Fullstack PHP/Laravel**.
 
-## Visão geral
+A aplicação permite que usuários realizem cadastro, autenticação, recuperação de senha e gerenciamento completo de contatos, incluindo pesquisa de endereços, geolocalização e visualização em mapa.
 
-- **Backend**: `api/` - Laravel com autenticação via Sanctum, geração de documentação OpenAPI e API REST.
-- **Frontend**: `web/` - SPA React com roteamento TanStack Router, Material UI e cliente gerado a partir da API OpenAPI.
-- **Imagens**: `imgs/` contém capturas de tela do sistema em funcionamento.
-- **Documentação da API**: disponível em `/docs/api` no backend.
+---
 
-## Funcionalidades principais
+# Objetivo do Desafio
 
-### Autenticação e conta
+Desenvolver uma aplicação de lista de contatos contendo:
 
-- Cadastro de usuário com nome, email e senha.
-- Login de usuário com token de autenticação.
-- Logout seguro.
-- Redefinição de senha via fluxo de esqueci minha senha.
-- Exclusão de conta autenticada.
+- Cadastro e autenticação de usuários
+- Recuperação de senha
+- CRUD de contatos
+- Pesquisa de endereços integrada ao ViaCEP
+- Geolocalização utilizando Google Maps
+- Visualização dos contatos em mapa
+- Exclusão de conta com validação de senha
+- API REST protegida por autenticação
 
-### Gestão de contatos
+---
 
-- Criação de contatos com campos:
-  - nome
-  - CPF
-  - telefone
-  - CEP
-  - logradouro
-  - número
-  - complemento
-  - bairro
-  - cidade
-  - estado
-  - latitude
-  - longitude
-- Listagem de contatos do usuário autenticado.
-- Exibição de detalhes de um contato.
-- Edição de contato.
-- Exclusão de contato.
+# Tecnologias Utilizadas
 
-### Validações e serviços
+## Backend
 
-- Validação de CPF válida e formatada.
-- Pesquisa de endereço por CEP usando serviço externo.
-- Formulários com validação no frontend e backend.
-- Tratamento de erros de validação e autenticação.
+- PHP 8+
+- Laravel 12
+- Laravel Sanctum
+- MySQL
+- Scramble (OpenAPI)
+- PHPUnit
 
-### Integração e documentação
+## Frontend
 
-- API documentada com OpenAPI.
-- `api/api.json` gera a especificação da API.
-- `web/src/http/generated/` contém cliente HTTP gerado a partir da especificação.
-- Documentação interativa acessível em `/docs/api`.
+- React 19
+- TypeScript
+- Vite
+- TanStack Router
+- TanStack Query
+- Material UI (Material Design 3)
+- React Hook Form
+- Zod
+- Axios
 
-### Experiência do usuário
+## Integrações
 
-- Telas públicas para login, registro e recuperação de senha.
-- Área autenticada com dashboard de contatos.
-- Modal de criação de contato.
-- Barra lateral com lista de contatos, edição e exclusão.
-- Visualização de contatos geolocalizados em mapa.
+- ViaCEP
+- Google Maps API (Geocoding + Maps)
 
-## Arquitetura do projeto
+---
 
-- `api/`
-  - `app/` controllers, modelos, serviços e regras de validação.
-  - `routes/api.php` define todas as rotas REST.
-  - `config/scramble.php` configura a geração da documentação OpenAPI.
-  - `database/migrations` e `factories` para persistência de usuários e contatos.
+# Funcionalidades Implementadas
 
-- `web/`
-  - `src/pages` rotas públicas e privadas.
-  - `src/components` componentes UI como sidebar e mapa.
-  - `src/http/generated` client HTTP gerado com base no OpenAPI.
-  - `src/contexts` gerenciamento de autenticação e coordenadas.
+## Autenticação
 
-## Como executar
+- Cadastro de usuários
+- Login
+- Logout
+- Recuperação de senha por e-mail
+- Redefinição de senha
+- Proteção de rotas autenticadas com Sanctum
 
-### Backend
+### Regras implementadas
+
+- Um usuário por e-mail
+- Senhas armazenadas com hash
+- Endpoints protegidos por autenticação
+
+---
+
+## Gerenciamento de Contatos
+
+### Cadastro
+
+Cada contato possui:
+
+- Nome
+- CPF
+- Telefone
+- CEP
+- Logradouro
+- Número
+- Complemento
+- Bairro
+- Cidade
+- Estado
+- Latitude
+- Longitude
+
+### Funcionalidades
+
+- Criar contato
+- Editar contato
+- Excluir contato
+- Visualizar contato
+- Listar contatos
+
+### Regras implementadas
+
+- CPF validado através do algoritmo oficial
+- CPF único por usuário
+- Apenas complemento é opcional
+- Validações no frontend e backend
+
+---
+
+## Pesquisa de Contatos
+
+Permite pesquisa por:
+
+- Nome
+- CPF
+
+Recursos adicionais:
+
+- Paginação
+- Ordenação
+- Filtros
+
+---
+
+## Integração ViaCEP
+
+A aplicação implementa um endpoint próprio no backend para consulta de endereços.
+
+Fluxo:
+
+1. Usuário informa critérios de busca
+2. Backend consulta ViaCEP
+3. Resultados são retornados ao frontend
+4. Endereço selecionado preenche automaticamente o formulário
+
+---
+
+## Integração Google Maps
+
+Durante o cadastro de um contato:
+
+1. O endereço é enviado para o serviço de Geocoding
+2. Latitude e longitude são obtidas automaticamente
+3. Coordenadas são armazenadas no banco de dados
+
+Na listagem:
+
+- Os contatos são exibidos em mapa
+- Ao selecionar um contato o mapa centraliza automaticamente
+- Um marcador (pin) é exibido na localização correspondente
+
+---
+
+## Exclusão de Conta
+
+O usuário pode excluir sua própria conta.
+
+### Regras implementadas
+
+- Necessário informar a senha atual
+- Senha inválida impede a exclusão
+- Todos os contatos vinculados são removidos automaticamente
+
+---
+
+# Arquitetura do Projeto
+
+## Backend (`api/`)
+
+```text
+app/
+├── Http/
+│   ├── Controllers
+│   ├── Requests
+│   └── Middleware
+├── Models
+├── Services
+├── Rules
+└── Providers
+
+routes/
+└── api.php
+
+database/
+├── migrations
+├── factories
+└── seeders
+```
+
+### Responsabilidades
+
+- Autenticação
+- Regras de negócio
+- Integrações externas
+- Persistência de dados
+- Documentação OpenAPI
+
+---
+
+## Frontend (`web/`)
+
+```text
+src/
+├── components
+├── pages
+├── routes
+├── contexts
+├── hooks
+├── services
+├── http
+│   └── generated
+└── validations
+```
+
+### Responsabilidades
+
+- Interface do usuário
+- Gerenciamento de estado
+- Consumo da API
+- Validação de formulários
+- Visualização dos mapas
+
+---
+
+# Documentação da API
+
+A API possui documentação OpenAPI gerada automaticamente.
+
+Após iniciar o backend:
+
+```text
+/docs/api
+```
+
+Também é gerado o arquivo:
+
+```text
+api/api.json
+```
+
+Utilizado para geração automática do cliente HTTP do frontend.
+
+---
+
+# Como Executar
+
+## Banco de Dados
+
+```bash
+cd docker
+docker compose up -d
+```
+
+Configuração padrão:
+
+| Configuração | Valor   |
+| ------------ | ------- |
+| Banco        | MySQL 8 |
+| Porta        | 3306    |
+| Usuário      | root    |
+| Senha        | 123456  |
+
+---
+
+## Backend
 
 ```bash
 cd api
+
 composer install
+
 cp .env.example .env
+
 php artisan key:generate
+
 php artisan migrate
+
 php artisan serve
 ```
 
-### Frontend
+Servidor:
+
+```text
+http://localhost:8000
+```
+
+---
+
+## Frontend
 
 ```bash
 cd web
+
 npm install
+
 npm run dev
 ```
 
-## Capturas de tela
+Servidor:
 
-- `imgs/login.png`
-- `imgs/home.png`
-- `imgs/create-contact.png`
-- `imgs/delete-contact.png`
+```text
+http://localhost:5173
+```
 
-## Observações
+---
 
-- A API de documentação está disponível em `/docs/api`.
-- O backend gera a especificação OpenAPI em `api/api.json`.
-- O frontend consome a API e usa código gerado automaticamente para manter os contratos sincronizados.
+# Capturas de Tela
+
+## Login
+
+![Login](imgs/login.png)
+
+## Dashboard
+
+![Dashboard](imgs/home.png)
+
+## Cadastro de Contato
+
+![Cadastro](imgs/create-contact.png)
+
+## Exclusão de Contato
+
+![Exclusão](imgs/delete-contact.png)
+
+---
+
+# Testes
+
+Para executar os testes do backend:
+
+```bash
+php artisan test
+```
+
+Os testes cobrem:
+
+- Autenticação
+- Cadastro de usuários
+- CRUD de contatos
+- Validações
+- Regras de negócio
+- Autorização
+
+---
+
+# Diferenciais Implementados
+
+- Arquitetura organizada por responsabilidades
+- Documentação OpenAPI automática
+- Cliente HTTP gerado automaticamente
+- Validação frontend + backend
+- Integração com ViaCEP
+- Integração com Google Maps
+- Material Design 3
+- TypeScript em toda a aplicação
+- API REST documentada
+- Autenticação baseada em Laravel Sanctum
+
+---
+
+# Autor
+
+Desenvolvido por Daniel Murilo como parte do processo seletivo para Desenvolvedor Fullstack PHP/Laravel.
