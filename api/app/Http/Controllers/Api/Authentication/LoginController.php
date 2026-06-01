@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Public;
+namespace App\Http\Controllers\Api\Authentication;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,6 +30,6 @@ class LoginController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token,
-        ]);
+        ], 201);
     }
 }

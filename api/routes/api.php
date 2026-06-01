@@ -1,24 +1,33 @@
 <?php
 
-use App\Http\Controllers\Api\Private\LogoutController;
-use App\Http\Controllers\Api\Public\LoginController;
-use App\Http\Controllers\Api\Public\RegisterController;
+use App\Http\Controllers\Api\Account\RegisterController;
+use App\Http\Controllers\Api\Authentication\LoginController;
+use App\Http\Controllers\Api\Authentication\LogoutController;
+use App\Http\Controllers\Api\Authentication\ForgotPasswordController;
+use App\Http\Controllers\Api\Authentication\ResetPasswordController;
+use App\Http\Controllers\Api\Contact\ListContactsController;
+use App\Http\Controllers\Api\Contact\ListOneContact;
+use App\Http\Controllers\Api\Contact\CreateContactController;
+use App\Http\Controllers\Api\Contact\UpdateContactController;
+use App\Http\Controllers\Api\Contact\DeleteContactController;
+use App\Http\Controllers\Api\Address\SearchAddressController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', RegisterController::class);
-// Route::post('/reset-password', ResetPasswordController::class);
-// Route::post('/forgot-password', ForgotPasswordController::class);
+Route::post('/forgot-password', ForgotPasswordController::class);
+Route::post('/reset-password', ResetPasswordController::class);
 
 Route::post('/login', LoginController::class);
 
-// Route::post('/forgot-password', ForgotPasswordController::class);
-// Route::post('/reset-password', ResetPasswordController::class);
+Route::get('/address/search', SearchAddressController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
-
-    // Route::apiResource('contacts', ContactController::class);
-
-    // Route::get('/address/search', AddressController::class);
+    Route::get('/contacts', ListContactsController::class);
+    Route::get('/contacts/{contact}', ListOneContact::class);
+    Route::post('/contacts', CreateContactController::class);
+    Route::put('/contacts/{contact}', UpdateContactController::class);
+    Route::delete('/contacts/{contact}', DeleteContactController::class);
 
     // Route::delete('/account', DeleteAccountController::class);
 

@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api\Public;
+namespace App\Http\Controllers\Api\Account;
 
+use App\Mail\AccountCreatedMail;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -25,6 +27,8 @@ class RegisterController extends Controller
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
+
+        Mail::to($user->email)->send(new AccountCreatedMail($user));
 
         return response()->json([
             'user' => $user,

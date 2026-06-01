@@ -1,0 +1,264 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Lista de Contatos",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http:\/\/localhost:8000\/api"
+    }
+  ],
+  "paths": {
+    "\/login": {
+      "post": {
+        "operationId": "public.login",
+        "tags": ["Login"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application\/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "anyOf": [
+                        {
+                          "$ref": "#\/components\/schemas\/User"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["user", "token"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Credenciais inv\u00e1lidas"
+                    }
+                  },
+                  "required": ["message"]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#\/components\/responses\/ValidationException"
+          }
+        }
+      }
+    },
+    "\/logout": {
+      "delete": {
+        "operationId": "private.logout",
+        "tags": ["Logout"],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "const": "Logout realizado"
+                    }
+                  },
+                  "required": ["message"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#\/components\/responses\/AuthenticationException"
+          }
+        }
+      }
+    },
+    "\/register": {
+      "post": {
+        "operationId": "public.register",
+        "tags": ["Register"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application\/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "minLength": 6
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "password_confirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#\/components\/schemas\/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["user", "token"]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#\/components\/responses\/ValidationException"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "email_verified_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "email_verified_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "User"
+      }
+    },
+    "responses": {
+      "ValidationException": {
+        "description": "Validation error",
+        "content": {
+          "application\/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Errors overview."
+                },
+                "errors": {
+                  "type": "object",
+                  "description": "A detailed description of each field that failed validation.",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["message", "errors"]
+            }
+          }
+        }
+      },
+      "AuthenticationException": {
+        "description": "Unauthenticated",
+        "content": {
+          "application\/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": ["message"]
+            }
+          }
+        }
+      }
+    }
+  }
+}
