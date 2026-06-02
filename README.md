@@ -313,13 +313,13 @@ http://localhost:5173
 
 ![Forgot](imgs/forgot.png)
 
-## Dashboard
-
-![Dashboard](imgs/home.png)
-
 ## Reset da senha
 
 ![Reset](imgs/reset-password.png)
+
+## Dashboard
+
+![Dashboard](imgs/home.png)
 
 ## Cadastro de Contato
 
