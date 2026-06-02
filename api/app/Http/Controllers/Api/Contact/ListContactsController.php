@@ -6,6 +6,7 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 
 class ListContactsController extends Controller
 {
@@ -16,6 +17,8 @@ class ListContactsController extends Controller
      * @return void
      */
     #[Group('Contact')]
+    #[QueryParameter("name", type: "string", description: "Busca contatos pelo nome")]
+    #[QueryParameter("cpf", type: "string", description: "Busca contatos pelo cpf")]
     public function __invoke(Request $request)
     {
         $user = $request->user();
