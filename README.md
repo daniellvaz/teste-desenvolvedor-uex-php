@@ -311,15 +311,15 @@ http://localhost:5173
 
 ## Esqueci minha senha
 
-![Login](imgs/login.png)
+![Forgot](imgs/forgot.png)
 
 ## Dashboard
 
-![Dashboard](imgs/forgot.png)
+![Dashboard](imgs/home.png)
 
 ## Reset da senha
 
-![Login](imgs/reset-password.png)
+![Reset](imgs/reset-password.png)
 
 ## Cadastro de Contato
 
