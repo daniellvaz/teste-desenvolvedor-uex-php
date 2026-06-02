@@ -1,6 +1,6 @@
 import cookies from "js-cookie"
 import { useNavigate } from "@tanstack/react-router"
-import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react"
+import { createContext, useContext, useState, type PropsWithChildren } from "react"
 
 import type { User } from "@/http/generated/api.schemas";
 import { useAuthenticationLogin, useAuthenticationLogout } from "@/http/generated/authentication/authentication";
@@ -75,12 +75,6 @@ export function AuthenticationProvider({ children }: PropsWithChildren) {
   const signIn = async (data: Credentials) => await signInAPI({ data })
 
   const signOut = async () => await signOutAPI()
-
-  useEffect(() => {
-    if (!token || !user) {
-      navigate({ to: "/login" })
-    }
-  }, [navigate, token, user])
 
   return (
     <AuthenticationContext.Provider value={{ user, token, signIn, signOut, }}>

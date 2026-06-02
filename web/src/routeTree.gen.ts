@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as MeRouteRouteImport } from './pages/me/route'
 import { Route as publicRegisterRouteImport } from './pages/(public)/register'
 import { Route as publicLoginRouteImport } from './pages/(public)/login'
 import { Route as publicForgotPasswordRouteImport } from './pages/(public)/forgot-password'
 import { Route as MeHomeIndexRouteImport } from './pages/me/home/index'
 import { Route as publicPasswordResetTokenRouteImport } from './pages/(public)/password/reset/$token'
 
+const MeRouteRoute = MeRouteRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicRegisterRoute = publicRegisterRouteImport.update({
   id: '/(public)/register',
   path: '/register',
@@ -31,9 +37,9 @@ const publicForgotPasswordRoute = publicForgotPasswordRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeHomeIndexRoute = MeHomeIndexRouteImport.update({
-  id: '/me/home/',
-  path: '/me/home/',
-  getParentRoute: () => rootRouteImport,
+  id: '/home/',
+  path: '/home/',
+  getParentRoute: () => MeRouteRoute,
 } as any)
 const publicPasswordResetTokenRoute =
   publicPasswordResetTokenRouteImport.update({
@@ -43,6 +49,7 @@ const publicPasswordResetTokenRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/me': typeof MeRouteRouteWithChildren
   '/forgot-password': typeof publicForgotPasswordRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/password/reset/$token': typeof publicPasswordResetTokenRoute
 }
 export interface FileRoutesByTo {
+  '/me': typeof MeRouteRouteWithChildren
   '/forgot-password': typeof publicForgotPasswordRoute
   '/login': typeof publicLoginRoute
   '/register': typeof publicRegisterRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/me': typeof MeRouteRouteWithChildren
   '/(public)/forgot-password': typeof publicForgotPasswordRoute
   '/(public)/login': typeof publicLoginRoute
   '/(public)/register': typeof publicRegisterRoute
@@ -67,6 +76,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/me'
     | '/forgot-password'
     | '/login'
     | '/register'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
     | '/password/reset/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/me'
     | '/forgot-password'
     | '/login'
     | '/register'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
     | '/password/reset/$token'
   id:
     | '__root__'
+    | '/me'
     | '/(public)/forgot-password'
     | '/(public)/login'
     | '/(public)/register'
@@ -89,15 +101,22 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  MeRouteRoute: typeof MeRouteRouteWithChildren
   publicForgotPasswordRoute: typeof publicForgotPasswordRoute
   publicLoginRoute: typeof publicLoginRoute
   publicRegisterRoute: typeof publicRegisterRoute
-  MeHomeIndexRoute: typeof MeHomeIndexRoute
   publicPasswordResetTokenRoute: typeof publicPasswordResetTokenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/register': {
       id: '/(public)/register'
       path: '/register'
@@ -121,10 +140,10 @@ declare module '@tanstack/react-router' {
     }
     '/me/home/': {
       id: '/me/home/'
-      path: '/me/home'
+      path: '/home'
       fullPath: '/me/home/'
       preLoaderRoute: typeof MeHomeIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MeRouteRoute
     }
     '/(public)/password/reset/$token': {
       id: '/(public)/password/reset/$token'
@@ -136,11 +155,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface MeRouteRouteChildren {
+  MeHomeIndexRoute: typeof MeHomeIndexRoute
+}
+
+const MeRouteRouteChildren: MeRouteRouteChildren = {
+  MeHomeIndexRoute: MeHomeIndexRoute,
+}
+
+const MeRouteRouteWithChildren =
+  MeRouteRoute._addFileChildren(MeRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
+  MeRouteRoute: MeRouteRouteWithChildren,
   publicForgotPasswordRoute: publicForgotPasswordRoute,
   publicLoginRoute: publicLoginRoute,
   publicRegisterRoute: publicRegisterRoute,
-  MeHomeIndexRoute: MeHomeIndexRoute,
   publicPasswordResetTokenRoute: publicPasswordResetTokenRoute,
 }
 export const routeTree = rootRouteImport
