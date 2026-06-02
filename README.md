@@ -277,6 +277,12 @@ php artisan migrate
 php artisan serve
 ```
 
+### Para executar os jobs, rodar em paralelo
+
+```bash
+php artisan queue:work
+```
+
 Servidor:
 
 ```text
