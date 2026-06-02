@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/contacts/{contact}', UpdateContactController::class);
     Route::patch('/contacts/{contact}', DeleteContactController::class);
 
-    Route::delete('/account', DeleteAccountController::class);
+    Route::patch('/account', DeleteAccountController::class);
 
     Route::delete('/logout', LogoutController::class);
 });

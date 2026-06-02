@@ -7,7 +7,6 @@ use App\Http\Requests\DeleteContactRequest;
 use App\Models\Contact;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class DeleteContactController extends Controller
 {
@@ -23,16 +22,6 @@ class DeleteContactController extends Controller
     public function __invoke(DeleteContactRequest $request, Contact $contact): JsonResponse
     {
         try {
-            if (!Hash::check($request->input('password'), $request->user()->password)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validação falhou',
-                    'errors' => [
-                        'password' => ['A senha fornecida está incorreta'],
-                    ],
-                ], 422);
-            }
-
             $contact->delete();
 
             return response()->json([

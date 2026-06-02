@@ -97,7 +97,7 @@ export interface CreateContactRequest {
   longitude?: number | null;
 }
 
-export interface DeleteContactRequest {
+export interface DeleteAccountRequest {
   /** @minLength 6 */
   password: string;
 }
@@ -109,9 +109,9 @@ export interface ForgotPasswordRequest {
 export interface ResetPasswordRequest {
   token: string;
   email: string;
-  /** @minLength 8 */
+  /** @minLength 6 */
   password: string;
-  /** @minLength 8 */
+  /** @minLength 6 */
   password_confirmation: string;
 }
 

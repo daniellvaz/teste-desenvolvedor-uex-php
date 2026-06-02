@@ -231,12 +231,22 @@
             }
         },
         "/account": {
-            "delete": {
+            "patch": {
                 "operationId": "account.deleteAccount",
                 "summary": "Deleta a conta do usuario",
                 "tags": [
                     "Account"
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteAccountRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -250,6 +260,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -702,16 +715,6 @@
                         }
                     }
                 ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/DeleteContactRequest"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "500": {
                         "description": "",
@@ -763,14 +766,14 @@
                             }
                         }
                     },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -987,7 +990,7 @@
                 ],
                 "title": "CreateContactRequest"
             },
-            "DeleteContactRequest": {
+            "DeleteAccountRequest": {
                 "type": "object",
                 "properties": {
                     "password": {
@@ -998,7 +1001,7 @@
                 "required": [
                     "password"
                 ],
-                "title": "DeleteContactRequest"
+                "title": "DeleteAccountRequest"
             },
             "ForgotPasswordRequest": {
                 "type": "object",
@@ -1025,11 +1028,11 @@
                     },
                     "password": {
                         "type": "string",
-                        "minLength": 8
+                        "minLength": 6
                     },
                     "password_confirmation": {
                         "type": "string",
-                        "minLength": 8
+                        "minLength": 6
                     }
                 },
                 "required": [

@@ -317,9 +317,9 @@ http://localhost:5173
 
 ![Cadastro](imgs/create-contact.png)
 
-## Exclusão de Contato
+## Exclusão da Conta
 
-![Exclusão](imgs/delete-contact.png)
+![Exclusão](imgs/delete-account.png)
 
 ---
 

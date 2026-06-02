@@ -23,6 +23,7 @@ import type {
   AccountResetPassword200,
   AccountResetPassword500,
   AuthenticationExceptionResponse,
+  DeleteAccountRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
   ValidationExceptionResponse
@@ -233,22 +234,24 @@ export const useAccountResetPassword = <TError = AccountResetPasswordErrorType<V
  * @summary Deleta a conta do usuario
  */
 export const accountDeleteAccount = (
-
+    deleteAccountRequest: DeleteAccountRequest,
  signal?: AbortSignal
 ) => {
 
 
       return accountDeleteAccountMutator<AccountDeleteAccount200>(
-      {url: `/account`, method: 'DELETE', signal
+      {url: `/account`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteAccountRequest, signal
     },
       );
     }
 
 
 
-export const getAccountDeleteAccountMutationOptions = <TError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,void, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,void, TContext> => {
+export const getAccountDeleteAccountMutationOptions = <TError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,{data: DeleteAccountRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,{data: DeleteAccountRequest}, TContext> => {
 
 const mutationKey = ['accountDeleteAccount'];
 const {mutation: mutationOptions} = options ?
@@ -260,10 +263,10 @@ const {mutation: mutationOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountDeleteAccount>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountDeleteAccount>>, {data: DeleteAccountRequest}> = (props) => {
+          const {data} = props ?? {};
 
-
-          return  accountDeleteAccount()
+          return  accountDeleteAccount(data,)
         }
 
 
@@ -274,18 +277,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type AccountDeleteAccountMutationResult = NonNullable<Awaited<ReturnType<typeof accountDeleteAccount>>>
-
-    export type AccountDeleteAccountMutationError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse>
+    export type AccountDeleteAccountMutationBody = DeleteAccountRequest
+    export type AccountDeleteAccountMutationError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse>
 
     /**
  * @summary Deleta a conta do usuario
  */
-export const useAccountDeleteAccount = <TError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,void, TContext>, }
+export const useAccountDeleteAccount = <TError = AccountDeleteAccountErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountDeleteAccount>>, TError,{data: DeleteAccountRequest}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof accountDeleteAccount>>,
         TError,
-        void,
+        {data: DeleteAccountRequest},
         TContext
       > => {
       return useMutation(getAccountDeleteAccountMutationOptions(options), queryClient);

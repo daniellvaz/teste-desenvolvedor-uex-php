@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class DeleteContactRequest extends FormRequest
+class DeleteAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +22,8 @@ class DeleteContactRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [];
+        return [
+            "password" => "required|string|min:6"
+        ];
     }
 }

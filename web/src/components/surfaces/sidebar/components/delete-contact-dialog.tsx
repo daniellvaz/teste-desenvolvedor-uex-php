@@ -7,39 +7,34 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
-  TextField,
   CircularProgress,
   Box,
 } from "@mui/material";
 import { queryClient } from "@/libs/react-query";
 
-import type { Contact, } from "@/http/generated/api.schemas";
-import { getContactListContactsQueryKey, useContactDeleteContact, type ContactDeleteContactMutationBody } from "@/http/generated/contact/contact";
+import type { Contact } from "@/http/generated/api.schemas";
+import { getContactListContactsQueryKey, useContactDeleteContact } from "@/http/generated/contact/contact";
 
 
-export interface DeleteAlertProps {
+export interface DeleteContactDialogProps {
   open: boolean;
   contact: Contact;
   onClose: () => void;
 }
 
-export function DeleteAlert({ open = false, onClose, contact }: DeleteAlertProps) {
-  const [password, setPassword] = useState("");
+export function DeleteContactDialog({ open = false, onClose, contact }: DeleteContactDialogProps) {
   const [error, setError] = useState<string>("");
   const { mutateAsync, isPending } = useContactDeleteContact({
     mutation: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getContactListContactsQueryKey() });
-        setPassword("");
         setError("");
         onClose();
       },
       onError: (error: unknown) => {
         const anyError = error as Record<string, unknown>;
         const responseData = anyError?.response as Record<string, unknown>;
-        const passwordErrors = (responseData?.data as Record<string, unknown>)?.errors as Record<string, unknown>;
-        const errorMessage = (passwordErrors?.password as string[])?.[0] ||
-          (responseData?.data as Record<string, unknown>)?.message ||
+        const errorMessage = (responseData?.data as Record<string, unknown>)?.message ||
           "Ocorreu um erro ao deletar o contato";
         setError(String(errorMessage));
       },
@@ -47,17 +42,8 @@ export function DeleteAlert({ open = false, onClose, contact }: DeleteAlertProps
   });
 
   const handleDelete = async () => {
-    if (!password) {
-      setError("A senha é obrigatória");
-      return;
-    }
-
     try {
-      const data: ContactDeleteContactMutationBody = { password };
-      await mutateAsync({
-        contact: contact.id,
-        data,
-      });
+      await mutateAsync({ contact: contact.id });
     } catch {
       // Error is handled in onError callback
     }
@@ -65,7 +51,6 @@ export function DeleteAlert({ open = false, onClose, contact }: DeleteAlertProps
 
   const handleClose = () => {
     if (!isPending) {
-      setPassword("");
       setError("");
       onClose();
     }
@@ -86,19 +71,7 @@ export function DeleteAlert({ open = false, onClose, contact }: DeleteAlertProps
             </Alert>
           )}
 
-          <TextField
-            type="password"
-            label="Senha"
-            placeholder="Digite sua senha para confirmar"
-            fullWidth
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setError("");
-            }}
-            disabled={isPending}
-            variant="outlined"
-          />
+          {/* No password required to delete a contact */}
         </Stack>
       </DialogContent>
       <DialogActions>

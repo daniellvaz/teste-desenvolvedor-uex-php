@@ -4,7 +4,10 @@
  * Lista de Contatos
  * OpenAPI spec version: 0.0.1
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -17,8 +20,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
   AuthenticationExceptionResponse,
@@ -30,641 +33,394 @@ import type {
   ContactUpdateContact200,
   ContactUpdateContact500,
   CreateContactRequest,
-  DeleteContactRequest,
   ModelNotFoundExceptionResponse,
   UpdateContactRequest,
-  ValidationExceptionResponse,
-} from "../api.schemas";
+  ValidationExceptionResponse
+} from '../api.schemas';
 
-import contactListContactsMutator from "../../../libs/axios";
-import type { ErrorType as ContactListContactsErrorType } from "../../../libs/axios";
-import contactCreateContactMutator from "../../../libs/axios";
-import type { ErrorType as ContactCreateContactErrorType } from "../../../libs/axios";
-import contactListOneContactMutator from "../../../libs/axios";
-import type { ErrorType as ContactListOneContactErrorType } from "../../../libs/axios";
-import contactUpdateContactMutator from "../../../libs/axios";
-import type { ErrorType as ContactUpdateContactErrorType } from "../../../libs/axios";
-import contactDeleteContactMutator from "../../../libs/axios";
-import type { ErrorType as ContactDeleteContactErrorType } from "../../../libs/axios";
+import contactListContactsMutator from '../../../libs/axios';
+import type { ErrorType as ContactListContactsErrorType } from '../../../libs/axios';
+import contactCreateContactMutator from '../../../libs/axios';
+import type { ErrorType as ContactCreateContactErrorType } from '../../../libs/axios';
+import contactListOneContactMutator from '../../../libs/axios';
+import type { ErrorType as ContactListOneContactErrorType } from '../../../libs/axios';
+import contactUpdateContactMutator from '../../../libs/axios';
+import type { ErrorType as ContactUpdateContactErrorType } from '../../../libs/axios';
+import contactDeleteContactMutator from '../../../libs/axios';
+import type { ErrorType as ContactDeleteContactErrorType } from '../../../libs/axios';
+
+
+
 
 /**
  * @summary Listar os contatos cadastrado
  */
-export const contactListContacts = (signal?: AbortSignal) => {
-  return contactListContactsMutator<Contact[]>({
-    url: `/contacts`,
-    method: "GET",
-    signal,
-  });
-};
+export const contactListContacts = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return contactListContactsMutator<Contact[]>(
+      {url: `/contacts`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
 
 export const getContactListContactsQueryKey = () => {
-  return [`/contacts`] as const;
-};
+    return [
+    `/contacts`
+    ] as const;
+    }
 
-export const getContactListContactsQueryOptions = <
-  TData = Awaited<ReturnType<typeof contactListContacts>>,
-  TError = ContactListContactsErrorType<AuthenticationExceptionResponse>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof contactListContacts>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getContactListContactsQueryKey();
+export const getContactListContactsQueryOptions = <TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof contactListContacts>>
-  > = ({ signal }) => contactListContacts(signal);
+const {query: queryOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof contactListContacts>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getContactListContactsQueryKey();
 
-export type ContactListContactsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof contactListContacts>>
->;
-export type ContactListContactsQueryError =
-  ContactListContactsErrorType<AuthenticationExceptionResponse>;
 
-export function useContactListContacts<
-  TData = Awaited<ReturnType<typeof contactListContacts>>,
-  TError = ContactListContactsErrorType<AuthenticationExceptionResponse>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListContacts>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof contactListContacts>>> = ({ signal }) => contactListContacts(signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ContactListContactsQueryResult = NonNullable<Awaited<ReturnType<typeof contactListContacts>>>
+export type ContactListContactsQueryError = ContactListContactsErrorType<AuthenticationExceptionResponse>
+
+
+export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListContacts>>,
           TError,
           Awaited<ReturnType<typeof contactListContacts>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useContactListContacts<
-  TData = Awaited<ReturnType<typeof contactListContacts>>,
-  TError = ContactListContactsErrorType<AuthenticationExceptionResponse>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListContacts>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListContacts>>,
           TError,
           Awaited<ReturnType<typeof contactListContacts>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useContactListContacts<
-  TData = Awaited<ReturnType<typeof contactListContacts>>,
-  TError = ContactListContactsErrorType<AuthenticationExceptionResponse>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListContacts>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Listar os contatos cadastrado
  */
 
-export function useContactListContacts<
-  TData = Awaited<ReturnType<typeof contactListContacts>>,
-  TError = ContactListContactsErrorType<AuthenticationExceptionResponse>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListContacts>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getContactListContactsQueryOptions(options);
+export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getContactListContactsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * @summary Criar um novo contato para o usuário autenticado
  */
 export const contactCreateContact = (
-  createContactRequest: CreateContactRequest,
-  signal?: AbortSignal,
+    createContactRequest: CreateContactRequest,
+ signal?: AbortSignal
 ) => {
-  return contactCreateContactMutator<ContactCreateContact201>({
-    url: `/contacts`,
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    data: createContactRequest,
-    signal,
-  });
-};
 
-export const getContactCreateContactMutationOptions = <
-  TError = ContactCreateContactErrorType<
-    | AuthenticationExceptionResponse
-    | ValidationExceptionResponse
-    | ContactCreateContact500
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof contactCreateContact>>,
-    TError,
-    { data: CreateContactRequest },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof contactCreateContact>>,
-  TError,
-  { data: CreateContactRequest },
-  TContext
-> => {
-  const mutationKey = ["contactCreateContact"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof contactCreateContact>>,
-    { data: CreateContactRequest }
-  > = (props) => {
-    const { data } = props ?? {};
+      return contactCreateContactMutator<ContactCreateContact201>(
+      {url: `/contacts`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createContactRequest, signal
+    },
+      );
+    }
 
-    return contactCreateContact(data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type ContactCreateContactMutationResult = NonNullable<
-  Awaited<ReturnType<typeof contactCreateContact>>
->;
-export type ContactCreateContactMutationBody = CreateContactRequest;
-export type ContactCreateContactMutationError = ContactCreateContactErrorType<
-  | AuthenticationExceptionResponse
-  | ValidationExceptionResponse
-  | ContactCreateContact500
->;
+export const getContactCreateContactMutationOptions = <TError = ContactCreateContactErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse | ContactCreateContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactCreateContact>>, TError,{data: CreateContactRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof contactCreateContact>>, TError,{data: CreateContactRequest}, TContext> => {
 
-/**
+const mutationKey = ['contactCreateContact'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactCreateContact>>, {data: CreateContactRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  contactCreateContact(data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ContactCreateContactMutationResult = NonNullable<Awaited<ReturnType<typeof contactCreateContact>>>
+    export type ContactCreateContactMutationBody = CreateContactRequest
+    export type ContactCreateContactMutationError = ContactCreateContactErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse | ContactCreateContact500>
+
+    /**
  * @summary Criar um novo contato para o usuário autenticado
  */
-export const useContactCreateContact = <
-  TError = ContactCreateContactErrorType<
-    | AuthenticationExceptionResponse
-    | ValidationExceptionResponse
-    | ContactCreateContact500
-  >,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contactCreateContact>>,
-      TError,
-      { data: CreateContactRequest },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contactCreateContact>>,
-  TError,
-  { data: CreateContactRequest },
-  TContext
-> => {
-  return useMutation(
-    getContactCreateContactMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useContactCreateContact = <TError = ContactCreateContactErrorType<AuthenticationExceptionResponse | ValidationExceptionResponse | ContactCreateContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactCreateContact>>, TError,{data: CreateContactRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof contactCreateContact>>,
+        TError,
+        {data: CreateContactRequest},
+        TContext
+      > => {
+      return useMutation(getContactCreateContactMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Lista um unico contato
  */
 export const contactListOneContact = (
-  contact: number,
-  signal?: AbortSignal,
+    contact: number,
+ signal?: AbortSignal
 ) => {
-  return contactListOneContactMutator<Contact>({
-    url: `/contacts/${contact}`,
-    method: "GET",
-    signal,
-  });
-};
 
-export const getContactListOneContactQueryKey = (contact: number) => {
-  return [`/contacts/${contact}`] as const;
-};
 
-export const getContactListOneContactQueryOptions = <
-  TData = Awaited<ReturnType<typeof contactListOneContact>>,
-  TError = ContactListOneContactErrorType<
-    AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
-  >,
->(
-  contact: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListOneContact>>,
-        TError,
-        TData
-      >
-    >;
-  },
+      return contactListOneContactMutator<Contact>(
+      {url: `/contacts/${contact}`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
+
+export const getContactListOneContactQueryKey = (contact: number,) => {
+    return [
+    `/contacts/${contact}`
+    ] as const;
+    }
+
+
+export const getContactListOneContactQueryOptions = <TData = Awaited<ReturnType<typeof contactListOneContact>>, TError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>>(contact: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData>>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getContactListOneContactQueryKey(contact);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof contactListOneContact>>
-  > = ({ signal }) => contactListOneContact(contact, signal);
+  const queryKey =  queryOptions?.queryKey ?? getContactListOneContactQueryKey(contact);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: contact !== null && contact !== undefined,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof contactListOneContact>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type ContactListOneContactQueryResult = NonNullable<
-  Awaited<ReturnType<typeof contactListOneContact>>
->;
-export type ContactListOneContactQueryError = ContactListOneContactErrorType<
-  AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
->;
 
-export function useContactListOneContact<
-  TData = Awaited<ReturnType<typeof contactListOneContact>>,
-  TError = ContactListOneContactErrorType<
-    AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
-  >,
->(
-  contact: number,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListOneContact>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof contactListOneContact>>> = ({ signal }) => contactListOneContact(contact, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: contact !== null && contact !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ContactListOneContactQueryResult = NonNullable<Awaited<ReturnType<typeof contactListOneContact>>>
+export type ContactListOneContactQueryError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>
+
+
+export function useContactListOneContact<TData = Awaited<ReturnType<typeof contactListOneContact>>, TError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>>(
+ contact: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListOneContact>>,
           TError,
           Awaited<ReturnType<typeof contactListOneContact>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useContactListOneContact<
-  TData = Awaited<ReturnType<typeof contactListOneContact>>,
-  TError = ContactListOneContactErrorType<
-    AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
-  >,
->(
-  contact: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListOneContact>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useContactListOneContact<TData = Awaited<ReturnType<typeof contactListOneContact>>, TError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>>(
+ contact: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListOneContact>>,
           TError,
           Awaited<ReturnType<typeof contactListOneContact>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useContactListOneContact<
-  TData = Awaited<ReturnType<typeof contactListOneContact>>,
-  TError = ContactListOneContactErrorType<
-    AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
-  >,
->(
-  contact: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListOneContact>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useContactListOneContact<TData = Awaited<ReturnType<typeof contactListOneContact>>, TError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>>(
+ contact: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lista um unico contato
  */
 
-export function useContactListOneContact<
-  TData = Awaited<ReturnType<typeof contactListOneContact>>,
-  TError = ContactListOneContactErrorType<
-    AuthenticationExceptionResponse | ModelNotFoundExceptionResponse
-  >,
->(
-  contact: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof contactListOneContact>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getContactListOneContactQueryOptions(contact, options);
+export function useContactListOneContact<TData = Awaited<ReturnType<typeof contactListOneContact>>, TError = ContactListOneContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse>>(
+ contact: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListOneContact>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getContactListOneContactQueryOptions(contact,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * @summary Atualiza os dados de contato
  */
 export const contactUpdateContact = (
-  contact: number,
-  updateContactRequest?: UpdateContactRequest,
-  signal?: AbortSignal,
+    contact: number,
+    updateContactRequest?: UpdateContactRequest,
+ signal?: AbortSignal
 ) => {
-  return contactUpdateContactMutator<ContactUpdateContact200>({
-    url: `/contacts/${contact}`,
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    data: updateContactRequest,
-    signal,
-  });
-};
 
-export const getContactUpdateContactMutationOptions = <
-  TError = ContactUpdateContactErrorType<
-    | AuthenticationExceptionResponse
-    | ModelNotFoundExceptionResponse
-    | ValidationExceptionResponse
-    | ContactUpdateContact500
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof contactUpdateContact>>,
-    TError,
-    { contact: number; data?: UpdateContactRequest },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof contactUpdateContact>>,
-  TError,
-  { contact: number; data?: UpdateContactRequest },
-  TContext
-> => {
-  const mutationKey = ["contactUpdateContact"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof contactUpdateContact>>,
-    { contact: number; data?: UpdateContactRequest }
-  > = (props) => {
-    const { contact, data } = props ?? {};
+      return contactUpdateContactMutator<ContactUpdateContact200>(
+      {url: `/contacts/${contact}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateContactRequest, signal
+    },
+      );
+    }
 
-    return contactUpdateContact(contact, data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type ContactUpdateContactMutationResult = NonNullable<
-  Awaited<ReturnType<typeof contactUpdateContact>>
->;
-export type ContactUpdateContactMutationBody = UpdateContactRequest;
-export type ContactUpdateContactMutationError = ContactUpdateContactErrorType<
-  | AuthenticationExceptionResponse
-  | ModelNotFoundExceptionResponse
-  | ValidationExceptionResponse
-  | ContactUpdateContact500
->;
+export const getContactUpdateContactMutationOptions = <TError = ContactUpdateContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactUpdateContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactUpdateContact>>, TError,{contact: number;data?: UpdateContactRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof contactUpdateContact>>, TError,{contact: number;data?: UpdateContactRequest}, TContext> => {
 
-/**
+const mutationKey = ['contactUpdateContact'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactUpdateContact>>, {contact: number;data?: UpdateContactRequest}> = (props) => {
+          const {contact,data} = props ?? {};
+
+          return  contactUpdateContact(contact,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ContactUpdateContactMutationResult = NonNullable<Awaited<ReturnType<typeof contactUpdateContact>>>
+    export type ContactUpdateContactMutationBody = UpdateContactRequest | undefined
+    export type ContactUpdateContactMutationError = ContactUpdateContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactUpdateContact500>
+
+    /**
  * @summary Atualiza os dados de contato
  */
-export const useContactUpdateContact = <
-  TError = ContactUpdateContactErrorType<
-    | AuthenticationExceptionResponse
-    | ModelNotFoundExceptionResponse
-    | ValidationExceptionResponse
-    | ContactUpdateContact500
-  >,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contactUpdateContact>>,
-      TError,
-      { contact: number; data?: UpdateContactRequest },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contactUpdateContact>>,
-  TError,
-  { contact: number; data?: UpdateContactRequest },
-  TContext
-> => {
-  return useMutation(
-    getContactUpdateContactMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useContactUpdateContact = <TError = ContactUpdateContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactUpdateContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactUpdateContact>>, TError,{contact: number;data?: UpdateContactRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof contactUpdateContact>>,
+        TError,
+        {contact: number;data?: UpdateContactRequest},
+        TContext
+      > => {
+      return useMutation(getContactUpdateContactMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Deletar um contato existente
  */
 export const contactDeleteContact = (
-  contact: number,
-  deleteContactRequest: DeleteContactRequest,
-  signal?: AbortSignal,
+    contact: number,
+ signal?: AbortSignal
 ) => {
-  return contactDeleteContactMutator<ContactDeleteContact200>({
-    url: `/contacts/${contact}`,
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    data: deleteContactRequest,
-    signal,
-  });
-};
 
-export const getContactDeleteContactMutationOptions = <
-  TError = ContactDeleteContactErrorType<
-    | AuthenticationExceptionResponse
-    | ModelNotFoundExceptionResponse
-    | ValidationExceptionResponse
-    | ContactDeleteContact500
-  >,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof contactDeleteContact>>,
-    TError,
-    { contact: number; data: DeleteContactRequest },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof contactDeleteContact>>,
-  TError,
-  { contact: number; data: DeleteContactRequest },
-  TContext
-> => {
-  const mutationKey = ["contactDeleteContact"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof contactDeleteContact>>,
-    { contact: number; data: DeleteContactRequest }
-  > = (props) => {
-    const { contact, data } = props ?? {};
+      return contactDeleteContactMutator<ContactDeleteContact200>(
+      {url: `/contacts/${contact}`, method: 'PATCH', signal
+    },
+      );
+    }
 
-    return contactDeleteContact(contact, data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type ContactDeleteContactMutationResult = NonNullable<
-  Awaited<ReturnType<typeof contactDeleteContact>>
->;
-export type ContactDeleteContactMutationBody = DeleteContactRequest;
-export type ContactDeleteContactMutationError = ContactDeleteContactErrorType<
-  | AuthenticationExceptionResponse
-  | ModelNotFoundExceptionResponse
-  | ValidationExceptionResponse
-  | ContactDeleteContact500
->;
+export const getContactDeleteContactMutationOptions = <TError = ContactDeleteContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactDeleteContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactDeleteContact>>, TError,{contact: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof contactDeleteContact>>, TError,{contact: number}, TContext> => {
 
-/**
+const mutationKey = ['contactDeleteContact'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactDeleteContact>>, {contact: number}> = (props) => {
+          const {contact} = props ?? {};
+
+          return  contactDeleteContact(contact,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ContactDeleteContactMutationResult = NonNullable<Awaited<ReturnType<typeof contactDeleteContact>>>
+
+    export type ContactDeleteContactMutationError = ContactDeleteContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactDeleteContact500>
+
+    /**
  * @summary Deletar um contato existente
  */
-export const useContactDeleteContact = <
-  TError = ContactDeleteContactErrorType<
-    | AuthenticationExceptionResponse
-    | ModelNotFoundExceptionResponse
-    | ValidationExceptionResponse
-    | ContactDeleteContact500
-  >,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contactDeleteContact>>,
-      TError,
-      { contact: number; data: DeleteContactRequest },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contactDeleteContact>>,
-  TError,
-  { contact: number; data: DeleteContactRequest },
-  TContext
-> => {
-  return useMutation(
-    getContactDeleteContactMutationOptions(options),
-    queryClient,
-  );
-};
+export const useContactDeleteContact = <TError = ContactDeleteContactErrorType<AuthenticationExceptionResponse | ModelNotFoundExceptionResponse | ValidationExceptionResponse | ContactDeleteContact500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactDeleteContact>>, TError,{contact: number}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof contactDeleteContact>>,
+        TError,
+        {contact: number},
+        TContext
+      > => {
+      return useMutation(getContactDeleteContactMutationOptions(options), queryClient);
+    }
