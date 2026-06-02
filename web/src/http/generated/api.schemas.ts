@@ -281,6 +281,17 @@ export type AuthenticationLogout200 = {
   message: 'Logout realizado';
 };
 
+export type ContactListContactsParams = {
+/**
+ * Busca contatos pelo nome
+ */
+name?: string;
+/**
+ * Busca contatos pelo cpf
+ */
+cpf?: string;
+};
+
 export type ContactCreateContact201 = {
   success: boolean;
   message: 'Contato criado com sucesso';

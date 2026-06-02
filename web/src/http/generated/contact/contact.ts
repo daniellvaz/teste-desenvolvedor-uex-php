@@ -30,6 +30,7 @@ import type {
   ContactCreateContact500,
   ContactDeleteContact200,
   ContactDeleteContact500,
+  ContactListContactsParams,
   ContactUpdateContact200,
   ContactUpdateContact500,
   CreateContactRequest,
@@ -56,13 +57,14 @@ import type { ErrorType as ContactDeleteContactErrorType } from '../../../libs/a
  * @summary Listar os contatos cadastrado
  */
 export const contactListContacts = (
-
+    params?: ContactListContactsParams,
  signal?: AbortSignal
 ) => {
 
 
       return contactListContactsMutator<Contact[]>(
-      {url: `/contacts`, method: 'GET', signal
+      {url: `/contacts`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -70,23 +72,23 @@ export const contactListContacts = (
 
 
 
-export const getContactListContactsQueryKey = () => {
+export const getContactListContactsQueryKey = (params?: ContactListContactsParams,) => {
     return [
-    `/contacts`
+    `/contacts`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getContactListContactsQueryOptions = <TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+export const getContactListContactsQueryOptions = <TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(params?: ContactListContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getContactListContactsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getContactListContactsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof contactListContacts>>> = ({ signal }) => contactListContacts(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof contactListContacts>>> = ({ signal }) => contactListContacts(params, signal);
 
 
 
@@ -100,7 +102,7 @@ export type ContactListContactsQueryError = ContactListContactsErrorType<Authent
 
 
 export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
+ params: undefined |  ContactListContactsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListContacts>>,
           TError,
@@ -110,7 +112,7 @@ export function useContactListContacts<TData = Awaited<ReturnType<typeof contact
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
+ params?: ContactListContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof contactListContacts>>,
           TError,
@@ -120,7 +122,7 @@ export function useContactListContacts<TData = Awaited<ReturnType<typeof contact
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+ params?: ContactListContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -128,11 +130,11 @@ export function useContactListContacts<TData = Awaited<ReturnType<typeof contact
  */
 
 export function useContactListContacts<TData = Awaited<ReturnType<typeof contactListContacts>>, TError = ContactListContactsErrorType<AuthenticationExceptionResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
+ params?: ContactListContactsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof contactListContacts>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getContactListContactsQueryOptions(options)
+  const queryOptions = getContactListContactsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

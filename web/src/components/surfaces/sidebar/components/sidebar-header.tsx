@@ -2,10 +2,11 @@ import type { Contact } from "@/http/generated/api.schemas";
 import { Autocomplete, Box, Paper, Stack, TextField, Typography } from "@mui/material";
 
 export interface SidebarHeaderProps {
-  contacts?: Contact[]
+  contacts?: Contact[];
+  onSearchChange: (value: string) => void
 }
 
-export function SidebarHeader({ contacts }: SidebarHeaderProps) {
+export function SidebarHeader({ contacts, onSearchChange }: SidebarHeaderProps) {
   return (
     <Paper elevation={0} sx={{ p: 2, backgroundColor: 'transparent', borderRadius: 0, flex: '0 0 auto' }}>
       <Stack spacing={2}>
@@ -15,9 +16,20 @@ export function SidebarHeader({ contacts }: SidebarHeaderProps) {
         <Autocomplete
           fullWidth
           size="small"
+          onChange={(_, value) => {
+            if (!value) {
+              onSearchChange("")
+              return;
+            }
+
+            const [__, name] = value.label.split('|')
+
+            onSearchChange(name)
+          }}
+          getOptionLabel={(option) => option.label}
           options={contacts?.map(contact => ({
             id: contact.id,
-            label: contact.name
+            label: `${contact.cpf} | ${contact.name}`,
           })) || []}
           renderInput={({ ...params }) => (
             <TextField

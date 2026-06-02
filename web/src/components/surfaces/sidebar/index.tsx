@@ -12,12 +12,16 @@ import { DeleteContactDialog } from "./components/delete-contact-dialog";
 import { DeleteAccountDialog } from "./components/delete-account-dialog";
 
 export function Sidebar() {
+  const [search, setSearch] = useState<string>("")
+
   const [contact, setContact] = useState<Contact>({} as Contact);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
 
-  const { data: contacts, isLoading } = useContactListContacts({});
+  const { data: contacts, isLoading } = useContactListContacts({
+    name: search
+  });
 
   const handleOpenUpdateDrawer = (data: Contact) => {
     setIsUpdateDrawerOpen(true);
@@ -41,6 +45,10 @@ export function Sidebar() {
     setIsDeleteAccountDialogOpen(false);
   }
 
+  const handleSearchContact = (value: string) => {
+    setSearch(value)
+  }
+
   return (
     <Box
       sx={{
@@ -53,6 +61,7 @@ export function Sidebar() {
     >
       <SidebarHeader
         contacts={contacts}
+        onSearchChange={handleSearchContact}
       />
       <ContactList
         contacts={contacts}
