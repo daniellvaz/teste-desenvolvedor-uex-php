@@ -42,22 +42,11 @@ export function DeleteContactDialog({ open = false, onClose, contact }: DeleteCo
   });
 
   const handleDelete = async () => {
-    try {
-      await mutateAsync({ contact: contact.id });
-    } catch {
-      // Error is handled in onError callback
-    }
-  };
-
-  const handleClose = () => {
-    if (!isPending) {
-      setError("");
-      onClose();
-    }
+    await mutateAsync({ contact: contact.id });
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Deletar Contato</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 2 }}>
@@ -75,7 +64,7 @@ export function DeleteContactDialog({ open = false, onClose, contact }: DeleteCo
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={isPending}>
+        <Button onClick={onClose} disabled={isPending}>
           Cancelar
         </Button>
         <Button

@@ -14,7 +14,6 @@ const formSchema = z.object({
 export interface DeleteAccountDialogProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (data: AccountDeleteAccountMutationBody) => void;
 }
 
 export function DeleteAccountDialog({ open, onClose }: DeleteAccountDialogProps) {
@@ -33,10 +32,6 @@ export function DeleteAccountDialog({ open, onClose }: DeleteAccountDialogProps)
     resolver: zodResolver(formSchema)
   })
 
-  const handleClose = () => {
-    onClose();
-  }
-
   const onSubmit = async (data: AccountDeleteAccountMutationBody) => {
     await deleteAccount({
       data
@@ -47,7 +42,7 @@ export function DeleteAccountDialog({ open, onClose }: DeleteAccountDialogProps)
     <Dialog
       component="form"
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       onSubmit={handleSubmit(onSubmit)}
     >
       <DialogTitle>Deletar conta</DialogTitle>
@@ -68,7 +63,7 @@ export function DeleteAccountDialog({ open, onClose }: DeleteAccountDialogProps)
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancelar</Button>
+        <Button onClick={onClose}>Cancelar</Button>
         <Button
           type="submit"
           color="error"

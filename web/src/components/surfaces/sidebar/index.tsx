@@ -12,12 +12,12 @@ import { DeleteContactDialog } from "./components/delete-contact-dialog";
 import { DeleteAccountDialog } from "./components/delete-account-dialog";
 
 export function Sidebar() {
-  const { data: contacts, isLoading } = useContactListContacts();
-
   const [contact, setContact] = useState<Contact>({} as Contact);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
+
+  const { data: contacts, isLoading } = useContactListContacts({});
 
   const handleOpenUpdateDrawer = (data: Contact) => {
     setIsUpdateDrawerOpen(true);
@@ -29,8 +29,16 @@ export function Sidebar() {
     setContact(data);
   }
 
+  const handleCloseDeleteAlert = () => {
+    setIsDeleteAccountDialogOpen(false);
+  }
+
   const handleOpenDeleteAccountDialog = () => {
     setIsDeleteAccountDialogOpen(true);
+  }
+
+  const handleCloseDeleteAccountDialog = () => {
+    setIsDeleteAccountDialogOpen(false);
   }
 
   return (
@@ -43,7 +51,9 @@ export function Sidebar() {
         borderRight: '1px solid #e0e0e0',
       }}
     >
-      <SidebarHeader />
+      <SidebarHeader
+        contacts={contacts}
+      />
       <ContactList
         contacts={contacts}
         isLoading={isLoading}
@@ -61,11 +71,10 @@ export function Sidebar() {
       <DeleteContactDialog
         contact={contact}
         open={isDeleteAlertOpen}
-        onClose={() => setIsDeleteAlertOpen(false)}
+        onClose={handleCloseDeleteAccountDialog}
       />
       <DeleteAccountDialog
-        onClose={() => { }}
-        onConfirm={() => { }}
+        onClose={handleCloseDeleteAlert}
         open={isDeleteAccountDialogOpen}
       />
     </Box>
