@@ -34,7 +34,7 @@ export function Sidebar() {
   }
 
   const handleCloseDeleteAlert = () => {
-    setIsDeleteAccountDialogOpen(false);
+    setIsDeleteAlertOpen(false);
   }
 
   const handleOpenDeleteAccountDialog = () => {
@@ -80,10 +80,10 @@ export function Sidebar() {
       <DeleteContactDialog
         contact={contact}
         open={isDeleteAlertOpen}
-        onClose={handleCloseDeleteAccountDialog}
+        onClose={handleCloseDeleteAlert}
       />
       <DeleteAccountDialog
-        onClose={handleCloseDeleteAlert}
+        onClose={handleCloseDeleteAccountDialog}
         open={isDeleteAccountDialogOpen}
       />
     </Box>

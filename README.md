@@ -309,9 +309,17 @@ http://localhost:5173
 
 ![Login](imgs/login.png)
 
+## Esqueci minha senha
+
+![Login](imgs/login.png)
+
 ## Dashboard
 
-![Dashboard](imgs/home.png)
+![Dashboard](imgs/forgot.png)
+
+## Reset da senha
+
+![Login](imgs/reset-password.png)
 
 ## Cadastro de Contato
 
